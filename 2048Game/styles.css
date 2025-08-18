@@ -1,0 +1,84 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #faf8ef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #776e65;
+}
+
+.score-container {
+    display: inline-block;
+    background-color: #bbada0;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.score-title {
+    font-size: 1rem;
+    color: #eee4da;
+}
+
+.score {
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 300px;
+    height: 300px;
+    background-color: #bbada0;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+.grid div {
+    width: 100%;
+    height: 100%;
+    background-color: #cdc1b4;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #776e65;
+}
+
+.game-over {
+    font-size: 2rem;
+    color: #776e65;
+    margin-top: 20px;
+    display: none;
+}
+
+.restart-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #8f7a66;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.restart-button:hover {
+    background-color: #9c8a77;
+}

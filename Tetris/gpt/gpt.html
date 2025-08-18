@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄罗斯方块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 10px;
+        }
+
+        canvas {
+            border: 1px solid black;
+        }
+
+        .game-container {
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        #gameCanvas {
+            border: 1px solid black;
+        }
+
+        .control-buttons {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-buttons.left {
+            left: 0;
+        }
+
+        .control-buttons.right {
+            right: 0;
+        }
+
+        .control-buttons button {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            border-radius: 10px;
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .score {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            width: 120px;
+            height: 45px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .next-piece-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .next-piece-container h2 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        #nextPieceCanvas {
+            border: 1px solid black;
+            background-color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            canvas {
+                width: 100%;
+                max-width: 280px;
+                height: auto;
+            }
+
+            .control-buttons {
+                gap: 5px;
+            }
+
+            .control-buttons button {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            button {
+                width: 100px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>俄罗斯方块</h1>
+
+    <!-- 下一个方块显示区域 -->
+    <div class="next-piece-container">
+        <h2>下一个方块</h2>
+        <canvas id="nextPieceCanvas" width="60" height="60"></canvas>
+    </div>
+    <div class="game-container">
+        <!-- 左侧按钮 -->
+        <div class="control-buttons left">
+            <button id="leftBtn">←</button>
+            <button id="rotateBtn">↑</button>
+        </div>
+
+        <!-- 游戏画布 -->
+        <canvas id="gameCanvas" width="300" height="600"></canvas>
+
+        <!-- 右侧按钮 -->
+        <div class="control-buttons right">
+            <button id="rightBtn">→</button>
+            <button id="downBtn">↓</button>
+        </div>
+    </div>
+    <div class="score">分数: <span id="score">0</span></div>
+    <div class="buttons">
+        <button id="startBtn">开始游戏</button>
+        <button id="pauseBtn" disabled>暂停</button>
+        <button id="resumeBtn" disabled>继续</button>
+        <button id="restartBtn" disabled>重新开始</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const nextPieceCanvas = document.getElementById('nextPieceCanvas');
+        const nextCtx = nextPieceCanvas.getContext('2d');
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 30;
+        const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFA500'];
+
+        let board = Array.from({
+            length: ROWS
+        }, () => Array(COLS).fill(null));
+        let currentPiece;
+        let nextPiece;
+        let score = 0;
+        let lastTime = 0;
+        let dropSpeed = 500;
+        let dropInterval = dropSpeed;
+        let autoDropTimer;
+        let gamePaused = false;
+        let gameStarted = false;
+        let gameLoopRunning = false;
+        let animationFrameId;
+
+        const TETROMINOS = [
+            [
+                [1, 1, 1],
+                [0, 1, 0]
+            ],
+            [
+                [1, 1, 1, 1]
+            ],
+            [
+                [1, 1],
+                [1, 1]
+            ],
+            [
+                [1, 1, 0],
+                [0, 1, 1]
+            ],
+            [
+                [0, 1, 1],
+                [1, 1, 0]
+            ],
+            [
+                [1, 0, 0],
+                [1, 1, 1]
+            ],
+            [
+                [0, 0, 1],
+                [1, 1, 1]
+            ]
+        ];
+
+        function randomPiece() {
+            const index = Math.floor(Math.random() * TETROMINOS.length);
+            const shape = TETROMINOS[index];
+            const color = colors[index];
+            return {
+                shape,
+                color,
+                x: 3,
+                y: 0
+            };
+        }
+
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (board[y][x]) {
+                        ctx.fillStyle = board[y][x];
+                        ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    }
+                }
+            }
+        }
+
+        function drawPiece(piece, context, offsetX = 0, offsetY = 0) {
+            context.fillStyle = piece.color;
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        context.fillRect((piece.x + x + offsetX) * BLOCK_SIZE, (piece.y + y + offsetY) * BLOCK_SIZE,
+                            BLOCK_SIZE, BLOCK_SIZE);
+                    }
+                }
+            }
+        }
+
+        function isValidMove(piece) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const newX = piece.x + x;
+                        const newY = piece.y + y;
+                        if (newX < 0 || newX >= COLS || newY >= ROWS || board[newY] && board[newY][newX]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function placePiece() {
+            for (let y = 0; y < currentPiece.shape.length; y++) {
+                for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                    if (currentPiece.shape[y][x]) {
+                        board[currentPiece.y + y][currentPiece.x + x] = currentPiece.color;
+                    }
+                }
+            }
+            clearLines();
+            currentPiece = nextPiece;
+            nextPiece = randomPiece();
+            drawNextPiece();
+            if (!isValidMove(currentPiece)) {
+                gameOver();
+            }
+        }
+
+        function clearLines() {
+            for (let y = ROWS - 1; y >= 0; y--) {
+                if (board[y].every(cell => cell !== null)) {
+                    board.splice(y, 1);
+                    board.unshift(Array(COLS).fill(null));
+                    score += 100;
+                    document.getElementById('score').textContent = score;
+                }
+            }
+        }
+
+        function moveDown() {
+            currentPiece.y++;
+            if (!isValidMove(currentPiece)) {
+                currentPiece.y--;
+                placePiece();
+            }
+        }
+
+        function moveLeft() {
+            currentPiece.x--;
+            if (!isValidMove(currentPiece)) {
+                currentPiece.x++;
+            }
+        }
+
+        function moveRight() {
+            currentPiece.x++;
+            if (!isValidMove(currentPiece)) {
+                currentPiece.x--;
+            }
+        }
+
+        function rotate() {
+            const temp = currentPiece.shape;
+            currentPiece.shape = currentPiece.shape[0].map((_, index) => currentPiece.shape.map(row => row[index]))
+                .reverse();
+            if (!isValidMove(currentPiece)) {
+                currentPiece.shape = temp;
+            }
+        }
+
+        function gameOver() {
+            alert('游戏结束！得分: ' + score);
+            resetGame();
+        }
+
+        function resetGame() {
+            board = Array.from({
+                length: ROWS
+            }, () => Array(COLS).fill(null));
+            score = 0;
+            document.getElementById('score').textContent = score;
+            currentPiece = randomPiece();
+            nextPiece = randomPiece();
+            lastTime = 0;
+            dropInterval = dropSpeed;
+            clearInterval(autoDropTimer);
+            cancelAnimationFrame(animationFrameId); // Clear the animation frame when resetting
+            gamePaused = false;
+            gameStarted = false;
+            gameLoopRunning = false;
+            updateButtonState();
+            drawNextPiece();
+        }
+
+        function startGame() {
+            if (!gameStarted) {
+                gameStarted = true;
+                currentPiece = randomPiece();
+                nextPiece = randomPiece();
+                startAutoDrop();
+                gameLoop(); // Start the game loop manually when starting the game
+                gameLoopRunning = true;
+                updateButtonState();
+                drawNextPiece();
+            }
+        }
+
+        function startAutoDrop() {
+            autoDropTimer = setInterval(moveDown, dropInterval);
+        }
+
+        function pauseGame() {
+            gamePaused = true;
+            clearInterval(autoDropTimer);
+            cancelAnimationFrame(animationFrameId); // Stop the animation frame during pause
+            updateButtonState();
+        }
+
+        function resumeGame() {
+            gamePaused = false;
+            startAutoDrop();
+            gameLoop(); // Restart the game loop when resuming the game
+            updateButtonState();
+        }
+
+        function updateButtonState() {
+            document.getElementById('startBtn').disabled = gameStarted;
+            document.getElementById('pauseBtn').disabled = !gameStarted || gamePaused;
+            document.getElementById('resumeBtn').disabled = !gamePaused;
+            document.getElementById('restartBtn').disabled = !gameStarted;
+        }
+
+        function drawNextPiece() {
+            nextCtx.clearRect(0, 0, nextPieceCanvas.width, nextPieceCanvas.height);
+            
+            let xsize = nextPieceCanvas.width/4
+            let ysize = nextPieceCanvas.height/4
+
+            nextCtx.fillStyle = nextPiece.color;
+            for (let y = 0; y < nextPiece.shape.length; y++) {
+                for (let x = 0; x < nextPiece.shape[y].length; x++) {
+                    if (nextPiece.shape[y][x]) {
+                        nextCtx.fillRect((x) * xsize, (y + 1) * ysize, xsize, ysize);
+                    }
+                }
+            }
+        }
+
+        function gameLoop() {
+            if (gamePaused) return;
+
+            animationFrameId = requestAnimationFrame(gameLoop); // Request next frame only if the game is not paused
+            drawBoard();
+            drawPiece(currentPiece, ctx);
+        }
+
+        function handleKeyDown(event) {
+            if (gamePaused) return;
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                    moveLeft();
+                    break;
+                case 'ArrowRight':
+                    moveRight();
+                    break;
+                case 'ArrowDown':
+                    moveDown();
+                    break;
+                case 'ArrowUp':
+                    rotate();
+                    break;
+            }
+        }
+
+        // 按钮事件处理
+        function addLongPressListener(buttonId, action) {
+            let interval = null;
+
+            const startAction = () => {
+                if (!interval) {
+                    action();
+                    interval = setInterval(action, 180); // 每 180ms 执行一次
+                }
+            };
+
+            const stopAction = () => {
+                clearInterval(interval);
+                interval = null;
+            };
+
+            const button = document.getElementById(buttonId);
+            button.addEventListener('mousedown', startAction);
+            button.addEventListener('mouseup', stopAction);
+            button.addEventListener('mouseleave', stopAction); // 防止鼠标移开时未释放按钮
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // 防止默认触摸事件
+                startAction();
+            });
+            button.addEventListener('touchend', stopAction);
+            button.addEventListener('touchcancel', stopAction);
+        }
+
+        // 按钮绑定长按功能
+        addLongPressListener('leftBtn', moveLeft);
+        addLongPressListener('rightBtn', moveRight);
+        addLongPressListener('downBtn', moveDown);
+        addLongPressListener('rotateBtn', rotate);
+
+        // Set up event listeners for buttons
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('pauseBtn').addEventListener('click', pauseGame);
+        document.getElementById('resumeBtn').addEventListener('click', resumeGame);
+        document.getElementById('restartBtn').addEventListener('click', resetGame);
+
+        // document.getElementById('leftBtn').addEventListener('click', moveLeft);
+        // document.getElementById('rightBtn').addEventListener('click', moveRight);
+        // document.getElementById('downBtn').addEventListener('click', moveDown);
+        // document.getElementById('rotateBtn').addEventListener('click', rotate);
+
+        document.addEventListener('keydown', handleKeyDown);
+    </script>
+
+</body>
+
+</html>

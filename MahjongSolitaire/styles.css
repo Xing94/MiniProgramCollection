@@ -1,0 +1,26 @@
+.game-board {
+    width: 400px;
+    height: 400px;
+    position: relative;
+}
+
+#连线画布 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* 使canvas不拦截点击事件 */
+}
+
+.cell {
+    width: 25%; /* 每行4个 */
+    height: 25%; /* 每列4个 */
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px; /* 可以放大的图标 */
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>二维码生成器</title>
+    <!-- 引入 QRCode.js 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        input {
+            width: 300px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>二维码生成器</h1>
+    <input type="text" id="text" placeholder="请输入文本">
+    <button onclick="generateQRCode()">生成二维码</button>
+    <!-- 初始隐藏下载按钮 -->
+    <button id="downloadBtn" style="display: none;">下载二维码</button>
+    <div id="qrcode"></div>
+
+    <script>
+        function generateQRCode() {
+            var text = document.getElementById('text').value;
+            var qrCodeContainer = document.getElementById('qrcode');
+            // 清空之前生成的二维码，并隐藏下载按钮
+            qrCodeContainer.innerHTML = "";
+            document.getElementById('downloadBtn').style.display = "none";
+
+            if (text.trim() === "") {
+                alert("请输入有效的文本！");
+                return;
+            }
+
+            // 生成二维码
+            new QRCode(qrCodeContainer, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // 延时获取生成的二维码图片（可能为 canvas 或 img）
+            setTimeout(function () {
+                var qrCodeImg = qrCodeContainer.querySelector('img');
+                var qrCodeCanvas = qrCodeContainer.querySelector('canvas');
+                var dataURL = "";
+
+                if (qrCodeCanvas) {
+                    dataURL = qrCodeCanvas.toDataURL("image/png");
+                } else if (qrCodeImg) {
+                    dataURL = qrCodeImg.src;
+                }
+
+                // 设置下载按钮点击事件
+                var downloadBtn = document.getElementById('downloadBtn');
+                downloadBtn.onclick = function () {
+                    // 创建一个临时链接并触发下载
+                    var a = document.createElement('a');
+                    a.href = dataURL;
+                    a.download = "qrcode.png";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+                // 显示下载按钮
+                downloadBtn.style.display = "inline-block";
+            }, 100);
+        }
+    </script>
+</body>
+
+</html>

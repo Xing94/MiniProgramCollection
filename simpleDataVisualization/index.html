@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易数据可视化平台</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .controls label {
+            font-size: 16px;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .controls select,
+        .controls input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        #chart-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            background-color: #f7f9fc;
+            border: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>简易数据可视化平台</h1>
+
+        <div class="controls">
+            <div>
+                <label for="excel-file">选择 Excel 文件:</label>
+                <input type="file" id="excel-file" accept=".xlsx, .xls">
+            </div>
+            <div>
+                <label for="chart-type">选择图表类型:</label>
+                <select id="chart-type" disabled>
+                    <option value="bar">柱状图</option>
+                    <option value="pie">饼图</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="chart-container"></div>
+    </div>
+
+    <script>
+        const excelFile = document.getElementById('excel-file');
+        const chartTypeSelect = document.getElementById('chart-type');
+        const chartContainer = document.getElementById('chart-container');
+        let rawData = null;
+        let myChart = echarts.init(chartContainer);
+
+        // 1. 处理文件上传
+        excelFile.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {
+                    type: 'array'
+                });
+                const sheetName = workbook.SheetNames[0]; // 获取第一个工作表
+                const worksheet = workbook.Sheets[sheetName];
+
+                // 将工作表数据转换为 JSON 格式
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                    header: 1
+                });
+                if (jsonData.length > 1) {
+                    const headers = jsonData[0]; // 假设第一行是表头
+                    const content = jsonData.slice(1); // 剩余部分是数据
+                    rawData = {
+                        headers,
+                        content
+                    };
+
+                    chartTypeSelect.disabled = false;
+                    renderChart();
+                } else {
+                    alert('文件内容为空或格式不正确');
+                    rawData = null;
+                    chartTypeSelect.disabled = true;
+                    myChart.clear();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // 2. 监听图表类型选择
+        chartTypeSelect.addEventListener('change', renderChart);
+
+        // 3. 渲染图表
+        function renderChart() {
+            if (!rawData) {
+                return;
+            }
+
+            const chartType = chartTypeSelect.value;
+            let options = {};
+
+            switch (chartType) {
+                case 'bar':
+                    options = {
+                        title: {
+                            text: '数据柱状图'
+                        },
+                        tooltip: {},
+                        xAxis: {
+                            data: rawData.content.map(row => row[0]) // 假设第一列为X轴
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: rawData.headers[1], // 假设第二列为数据
+                            type: 'bar',
+                            data: rawData.content.map(row => row[1])
+                        }]
+                    };
+                    break;
+
+                case 'pie':
+                    const pieData = rawData.content.map(row => ({
+                        value: row[1],
+                        name: row[0]
+                    }));
+                    options = {
+                        title: {
+                            text: '数据饼图'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        series: [{
+                            name: rawData.headers[1],
+                            type: 'pie',
+                            radius: '55%',
+                            data: pieData
+                        }]
+                    };
+                    break;
+            }
+
+            myChart.setOption(options, true);
+        }
+    </script>
+
+</body>
+
+</html>
