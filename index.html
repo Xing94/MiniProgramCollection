@@ -12,12 +12,7 @@
 
     <header class="header">
         <div class="logo">我的门户</div>
-        <nav class="nav-menu">
-            <a href="#games-section">游戏</a>
-            <a href="#tools-section">工具</a>
-            <a href="#learn-section">学习</a>
-            <a href="#about">关于</a>
-        </nav>
+        <nav class="nav-menu" id="nav-menu"></nav>
     </header>
 
     <section class="hero">
@@ -34,8 +29,57 @@
     <script src="data.js"></script>
 
     <script>
-        // 获取主内容区域的容器
+        // 获取导航菜单和主内容区域的容器
+        const navMenu = document.getElementById('nav-menu');
         const mainContent = document.getElementById('main-content');
+        const navMaxItems = 4; // 定义最大导航项数
+
+        // 生成导航菜单
+        function generateNavMenu(navData) {
+            // 如果导航项少于或等于3个，直接生成链接
+            if (navData.length <= navMaxItems) {
+                navData.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = item.link;
+                    link.textContent = item.label;
+                    navMenu.appendChild(link);
+                });
+            } else {
+                // 如果导航项超过3个，生成前两个，其余的放入下拉菜单
+                for (let i = 0; i < navData.length; i++) {
+                    if (i < navMaxItems - 1) { // 展示前两个链接
+                        const link = document.createElement('a');
+                        link.href = navData[i].link;
+                        link.textContent = navData[i].label;
+                        navMenu.appendChild(link);
+                    } else { // 创建下拉菜单
+                        const dropdown = document.createElement('div');
+                        dropdown.className = 'dropdown';
+
+                        const moreBtn = document.createElement('a');
+                        moreBtn.textContent = '更多 ▼';
+                        moreBtn.href = 'javascript:void(0);'; // 阻止跳转
+                        moreBtn.className = 'dropbtn';
+                        dropdown.appendChild(moreBtn);
+
+                        const dropdownContent = document.createElement('div');
+                        dropdownContent.className = 'dropdown-content';
+
+                        // 将剩余的链接添加到下拉菜单中
+                        for (let j = navMaxItems - 1; j < navData.length; j++) {
+                            const link = document.createElement('a');
+                            link.href = navData[j].link;
+                            link.textContent = navData[j].label;
+                            dropdownContent.appendChild(link);
+                        }
+
+                        dropdown.appendChild(dropdownContent);
+                        navMenu.appendChild(dropdown);
+                        break; // 停止循环，因为下拉菜单已经生成
+                    }
+                }
+            }
+        }
 
         // 定义一个函数，用于生成整个分类区块
         function generateSection(category, sectionData) {
@@ -65,9 +109,13 @@
             mainContent.appendChild(section);
         }
 
+        // 页面加载完成后，首先生成导航，然后生成内容
+        generateNavMenu(data.nav);
+
         // 遍历全局的 data 对象，生成页面
         for (const category in data) {
-            if (data.hasOwnProperty(category)) {
+            // 忽略 nav 数据，因为它已经被处理
+            if (category !== 'nav' && data.hasOwnProperty(category)) {
                 generateSection(category, data[category]);
             }
         }

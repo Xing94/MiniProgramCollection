@@ -1,5 +1,13 @@
 // data.js
 const data = {
+    "nav": [
+        { "label": "游戏", "link": "#games-section" },
+        { "label": "工具", "link": "#tools-section" },
+        { "label": "学习", "link": "#learn-section" },
+        { "label": "关于", "link": "#about" },
+        { "label": "博客", "link": "#blog-section" },
+        { "label": "联系", "link": "#contact-section" }
+    ],
     "games": {
         "title": "🎮 游戏",
         "cards": [
