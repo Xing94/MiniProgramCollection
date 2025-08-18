@@ -39,8 +39,14 @@ const data = {
             {
                 "title": "二维码生成器",
                 "description": "一个简单易用的网页版计算器。",
-                "link": "./qrcode/index.html"
+                "link": "./qrcode/generate/index.html"
             },
+            {
+                "title": "扫描二维码",
+                "description": "扫描获取二维码数据。",
+                "link": "./qrcode/scan/index.html"
+            },
+
             {
                 "title": "DeepSeek聊天",
                 "description": "帮你快速找到想要的颜色代码。",

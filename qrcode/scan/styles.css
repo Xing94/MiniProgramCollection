@@ -1,0 +1,142 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'PingFang SC', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+h1 {
+    color: #222;
+    margin-bottom: 24px;
+    font-size: 2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 320px;
+    max-width: 90vw;
+    height: 320px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.scan-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 3px dashed #4f8cff;
+    border-radius: 16px;
+    pointer-events: none;
+}
+
+#startButton {
+    background: linear-gradient(90deg, #4f8cff 0%, #38c9ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.12);
+    transition: background 0.2s;
+}
+
+#startButton:hover {
+    background: linear-gradient(90deg, #38c9ff 0%, #4f8cff 100%);
+}
+
+#result {
+    margin-top: 10px;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    word-break: break-all;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    .video-wrapper {
+        width: 90vw;
+        height: 90vw;
+        min-width: 220px;
+        min-height: 220px;
+    }
+
+    #result {
+        font-size: 0.95rem;
+        max-width: 90vw;
+    }
+
+    #startButton {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+}
+
+ #copyButton {
+     background: linear-gradient(90deg, #38c9ff 0%, #4f8cff 100%);
+     color: #fff;
+     border: none;
+     border-radius: 24px;
+     padding: 10px 28px;
+     font-size: 1rem;
+     font-weight: 500;
+     cursor: pointer;
+     margin-top: 10px;
+     box-shadow: 0 2px 8px rgba(79, 140, 255, 0.12);
+     transition: background 0.2s, transform 0.2s;
+     outline: none;
+ }
+
+ #copyButton:hover,
+ #copyButton:active {
+     background: linear-gradient(90deg, #4f8cff 0%, #38c9ff 100%);
+     transform: scale(1.05);
+ }
