@@ -2,6 +2,8 @@
 
 ![Logo](https://static.zhihu.com/heifetz/favicon.ico)
 
+[首页链接](https://xing94.github.io/MiniProgramCollection/)
+
 ## 欢迎来到我的微型门户
 
 发现、探索、学习和娱乐，所有精彩内容都在这里！
