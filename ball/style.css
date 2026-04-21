@@ -1,0 +1,142 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #222;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#gameCanvas {
+    display: block;
+    margin: auto;
+    background: #333;
+    border: 2px solid #fff;
+}
+
+#message {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
+
+.diary-list {
+    text-align: left;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.diary-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 滚动条美化 */
+.diary-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.diary-list::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
+/* 日记列表滚动条美化 */
+.diary-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.diary-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 204, 0, 0.3);
+    border-radius: 10px;
+}
+
+/* 新日记出现的淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.diary-item {
+    transition: all 0.3s ease;
+}
+
+/* 闪烁的打字机光标 */
+.typing-cursor::after {
+    content: '...';
+    display: inline-block;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* 正在生成的日记呼吸效果 */
+.diary-item-loading {
+    border-left: 3px dashed #ffcc00 !important;
+    background: rgba(255, 204, 0, 0.08) !important;
+    position: relative;
+}
+
+/* 简单的旋转加载圆圈 */
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 204, 0, 0.3);
+    border-top: 3px solid #ffcc00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 确保冒险模态框的内容区高度固定 */
+#adventureBody {
+    overflow: hidden;
+    /* 禁用父级滚动 */
+}
+
+/* 这里的样式配合 JS 中的 flex: 1 */
+.diary-list {
+    /* 隐藏原生滚动条美化（可选） */
+    scrollbar-width: thin;
+    scrollbar-color: #ffcc00 rgba(255, 255, 255, 0.1);
+}
+
+.diary-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.diary-list::-webkit-scrollbar-thumb {
+    background-color: #ffcc00;
+    border-radius: 10px;
+}

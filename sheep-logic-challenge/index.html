@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>羊羊逻辑挑战 - 多模式版</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="game-window">
+        <div id="settings-panel" class="settings">
+            <h3>游戏设置</h3>
+            <div class="option">
+                <label>难度模式：</label>
+                <select id="difficulty-select">
+                    <option value="easy">简单模式 (2个色块大小为1)</option>
+                    <option value="normal" selected>一般模式 (1个色块大小为1)</option>
+                    <option value="hard">困难模式 (最少3格)</option>
+                    <option value="custom">自定义模式</option>
+                </select>
+            </div>
+            <div id="custom-options" style="display: none;">
+                <div class="option">
+                    <label>棋盘大小 (N): </label>
+                    <input type="number" id="n-size" value="8" min="6" max="12">
+                </div>
+                <div class="option">
+                    <label>最小色块面积: </label>
+                    <input type="number" id="min-cells" value="3" min="1" max="10">
+                </div>
+            </div>
+            <button id="start-btn">进入游戏</button>
+        </div>
+
+        <div id="game-panel" style="display: none;">
+            <div class="header">
+                <div class="hearts" id="hearts">❤️❤️❤️</div>
+                <div class="level" id="mode-display">一般模式</div>
+            </div>
+            <div class="rules-bar">每行/列/颜色仅1只小羊，互不相邻</div>
+
+            <canvas id="gameBoard"></canvas>
+
+            <div id="game-over-controls" style="display: none; margin-top: 15px;">
+                <button id="play-again-btn" style="background: #27ae60; width: 100%; margin-bottom: 10px;">再来一局</button>
+            </div>
+
+            <div class="footer">
+                <div class="status">剩余小羊: <span id="sheep-count">0</span></div>
+                <button id="back-btn">返回设置</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

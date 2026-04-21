@@ -1,0 +1,541 @@
+:root {
+    --bg: #0b1020;
+    --card: #121a2f;
+    --muted: #9aa4bf;
+    --accent: #7c9dff;
+    --good: #3ddc97;
+    --warn: #ffcc00;
+    --bad: #ff6b6b;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(1200px 600px at 80% -10%, #1b2444 0%, #0b1020 60%);
+    color: #e8edff
+}
+
+.container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 14px
+}
+
+.card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .02));
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35)
+}
+
+.row {
+    display: flex;
+    gap: 14px
+}
+
+.col {
+    flex: 1
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px
+}
+
+.title {
+    font-weight: 700;
+    letter-spacing: .3px
+}
+
+.muted {
+    color: var(--muted)
+}
+
+.pet-wrap {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 14px
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #1f2d58, #0f1730);
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .09)
+}
+
+.face {
+    width: 80px;
+    height: 80px
+}
+
+.stats {
+    display: grid;
+    gap: 10px;
+    margin-top: 6px
+}
+
+.stat {
+    display: grid;
+    gap: 6px
+}
+
+.bar {
+    height: 10px;
+    background: #202b4f;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .06)
+}
+
+.bar>i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #9f7cff)
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px
+}
+
+.chip {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    color: #cdd7ff
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px
+}
+
+button {
+    appearance: none;
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: .2px;
+    background: #1a2446;
+    color: #dbe2ff;
+    border: 1px solid rgba(255, 255, 255, .12)
+}
+
+button:active {
+    transform: translateY(1px)
+}
+
+button.primary {
+    background: linear-gradient(135deg, #7c9dff, #7a7cff);
+    color: #0b1020
+}
+
+.log {
+    height: 240px;
+    overflow: auto;
+    padding: 12px 14px;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+    scroll-behavior: smooth
+}
+
+.msg {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0
+}
+
+.msg .bubble {
+    max-width: 80%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    line-height: 1.4;
+    border: 1px solid rgba(255, 255, 255, .08)
+}
+
+.msg.user {
+    justify-content: flex-end
+}
+
+.msg.user .bubble {
+    background: #22305f
+}
+
+.msg.bot .bubble {
+    background: #172142
+}
+
+.composer {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid rgba(255, 255, 255, .06)
+}
+
+input[type=text] {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #101735;
+    color: #e8edff;
+    border: 1px solid rgba(255, 255, 255, .12)
+}
+
+.footer {
+    padding: 10px 14px;
+    color: var(--muted);
+    font-size: 12px
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    background: #172142;
+    border: 1px solid rgba(255, 255, 255, .12);
+    padding: 10px 12px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity .25s
+}
+
+.toast.show {
+    opacity: 1
+}
+
+@media (max-width:560px) {
+    .pet-wrap {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .avatar {
+        width: 100%;
+        height: 140px;
+        border-radius: 16px
+    }
+
+    .face {
+        width: 100px;
+        height: 100px
+    }
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 24px;
+    /* 现有的 background 会被 JS 覆盖，这里增加过渡 */
+    transition: background 0.5s ease;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .09);
+}
+
+/* 呼吸动画：让头像轻微起伏 */
+@keyframes breathing {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.avatar svg {
+    animation: breathing 3s ease-in-out infinite;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 互动点击时的回弹效果 */
+.avatar.active-tap {
+    transform: scale(0.9) rotate(5deg);
+}
+
+/* 状态条发光效果 */
+.bar>i {
+    position: relative;
+    overflow: hidden;
+}
+
+.bar>i::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    to {
+        left: 100%;
+    }
+}
+
+/* 摇尾巴动画 */
+@keyframes wagTail {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+        transform-origin: 20px 70px;
+    }
+
+    50% {
+        transform: rotate(-20deg);
+        transform-origin: 20px 70px;
+    }
+}
+
+#dogTail {
+    animation: wagTail 0.8s ease-in-out infinite;
+}
+
+/* 呼吸感：整体微动 */
+#dogSvg {
+    animation: breathing 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes breathing {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+/* 爱心升起动画 */
+.heart-effect {
+    position: absolute;
+    color: #ff6b6b;
+    font-size: 24px;
+    animation: floatUp 1s ease-out forwards;
+    z-index: 10;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* 点击反馈 */
+.avatar:active {
+    transform: scale(0.95);
+}
+
+@keyframes shiver {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-1px, 1px);
+    }
+
+    75% {
+        transform: translate(1px, -1px);
+    }
+}
+
+.shiver {
+    animation: shiver 0.15s infinite;
+    filter: sepia(0.3);
+    /* 变得有点灰暗 */
+}
+
+/* 当被摸头或心情极好时触发的缩放效果 */
+@keyframes enjoy {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(2deg);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.enjoy-animation {
+    animation: enjoy 0.5s ease-in-out;
+}
+
+#particleContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    /* 确保在最上层 */
+    pointer-events: none;
+}
+
+/* 游戏棋子 */
+.piece {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.piece.black {
+    background: #222;
+}
+
+.piece.white {
+    background: #fff;
+    border: 1px solid #ccc;
+}
+
+/* 菜单按钮 */
+.game-opt {
+    background: #1e294b;
+    border: 1px solid var(--accent);
+    color: white;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.game-opt:active {
+    transform: scale(0.98);
+    background: var(--accent);
+    color: #000;
+}
+
+#gameHeader #closeGameBtn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    /* 调深背景颜色看是否生效 */
+    z-index: 9999;
+    /* 确保这个值足够大 */
+    display: none;
+    /* 初始隐藏 */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 1. 扩大弹窗尺寸 */
+.modal-content {
+    background: var(--card);
+    width: 95%;
+    /* 手机端占据绝大部分宽度 */
+    max-width: 800px;
+    /* 宽度限制扩大，适配大棋盘 */
+    min-height: 600px;
+    /* 增加最小高度 */
+    border-radius: 24px;
+    border: 2px solid rgba(124, 157, 255, 0.2);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+}
+
+/* 2. 优化棋子样式 */
+.piece {
+    border-radius: 50%;
+    transition: transform 0.1s ease;
+    box-sizing: border-box;
+}
+
+.piece.black {
+    background: radial-gradient(circle at 30% 30%, #444, #000);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.piece.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ddd);
+    border: 1px solid #bbb;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 3. 游戏容器滚动优化 */
+#gameBody {
+    flex: 1;
+    overflow: auto;
+    /* 允许在小屏幕上滚动查看大棋盘 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.diary-list {
+    text-align: left;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.diary-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 滚动条美化 */
+.diary-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.diary-list::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}

@@ -30,6 +30,14 @@ const data = {
                 "title": "俄罗斯方块",
                 "description": "逻辑推理游戏，让你的大脑动起来。",
                 "link": "./Tetris/index.html"
+            }, {
+                "title": "碰碰球",
+                "description": "未完成的碰碰球小游戏",
+                "link": "./ball/index.html"
+            }, {
+                "title": "找羊小游戏",
+                "description": "每行每列只有一只羊哦",
+                "link": "./sheep-logic-challenge/index.html"
             }
         ]
     },
@@ -56,6 +64,14 @@ const data = {
                 "title": "Excel表格可视化工具",
                 "description": "帮助你合理安排每一天的时间。",
                 "link": "./simpleDataVisualization/index.html"
+            }, {
+                "title": "Ai聊天宠物",
+                "description": "一个专属宠物",
+                "link": "./aipet/index.html"
+            }, {
+                "title": "图片处理工具",
+                "description": "现在只能去水印",
+                "link": "./image-processor/index.html"
             }
         ]
     },
